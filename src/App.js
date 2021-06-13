@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddUser from "./components/AddUser";
 import UserTable from "./components/UserTable";
-import EditUser from './components/EditUser';
+import EditUser from "./components/EditUser";
 import { v4 as uuidv4 } from "uuid";
 
 function App() {
-  const usersData = [
-    { id: uuidv4(), name: "Tania", username: "floppydiskette" },
-    { id: uuidv4(), name: "Craig", username: "siliconeidolon" },
-    { id: uuidv4(), name: "Ben", username: "benisphere" },
-  ];
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const userData = async () => {
+      await fetch("https://jsonplaceholder.typicode.com/users")
+        .then((response) => response.json())
+        .then((json) => setUsers(json))
+        .catch((error) => console.log(error));
+    };
+
+    userData()
+  }, []);
 
   const initialState = { id: null, name: "", username: "" };
 
   const [editing, setEditing] = useState(false);
   const [currentUser, setCurrentUser] = useState(initialState);
-  const [users, setUsers] = useState(usersData);
 
   const addUser = (user) => {
     user.id = uuidv4();
